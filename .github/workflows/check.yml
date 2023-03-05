@@ -4,10 +4,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          curl -L https://nixos.org/nix/install | sh
-          . ~/.nix-profile/etc/profile.d/nix.sh
-          nix-env -iA nixpkgs.nixUnstable
-          mkdir -p ~/.config/nix/
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-          nix flake check
+      - uses: cachix/install-nix-action@v20
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix flake check
+      - run: nix build
