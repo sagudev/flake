@@ -5,47 +5,35 @@
 
 {
   config = {
-    time.timeZone = "America/Vancouver";
+    time.timeZone = "Europe/Ljubljana";
     # Windows wants hardware clock in local time instead of UTC
     #time.hardwareClockInLocalTime = true;
 
-    i18n.defaultLocale = "en_CA.UTF-8";
+    i18n.defaultLocale = "sl_SI.UTF-8";
     i18n.supportedLocales = [ "all" ];
 
     environment.systemPackages = with pkgs; [
       # Shell utilities
-      patchelf
       direnv
       nix-direnv
       git
-      jq
-      fzf
+      wget
+      curl
+      nano
       ripgrep
       lsof
       htop
-      bat
-      grex
-      broot
-      bottom
       fd
       sd
       fio
       hyperfine
       tokei
-      bandwhich
-      lsd
-      abduco
-      dvtm
       ntfs3g
       killall
       gptfdisk
-      fio
       rnix-lsp
     ];
     environment.shellAliases = { };
-    environment.variables = {
-      EDITOR = "${pkgs.neovimConfigured}/bin/nvim";
-    };
     environment.pathsToLink = [
       "/share/nix-direnv"
     ];
@@ -66,11 +54,6 @@
       eval "$(${pkgs.direnv}/bin/direnv hook bash)"
       source "${pkgs.fzf}/share/fzf/key-bindings.bash"
       source "${pkgs.fzf}/share/fzf/completion.bash"
-    '';
-
-    security.sudo.wheelNeedsPassword = false;
-    security.sudo.extraConfig = ''
-      Defaults lecture = never
     '';
 
     # Use edge NixOS.
