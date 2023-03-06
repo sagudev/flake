@@ -13,72 +13,26 @@
   };
 
   outputs = { self, nixpkgs, nixos-wsl, home-manager }:
-    let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
-    in
+    # supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
     {
-      overlays.default = final: prev: {
-        neovimConfigured = final.callPackage ./packages/neovimConfigured { };
-        fix-vscode = final.callPackage ./packages/fix-vscode { };
+
+      packages = import nixpkgs {
+        system = "x86_64-linux";
+        overlays = [ self.overlays.default ];
+        config.allowUnfree = true;
       };
 
-      packages = forAllSystems
-        (system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ self.overlays.default ];
-              config.allowUnfree = true;
-            };
-          in
-          {
-            inherit (pkgs) neovimConfigured fix-vscode;
-
-            # Excluded from overlay deliberately to avoid people accidently importing it.
-            unsafe-bootstrap = pkgs.callPackage ./packages/unsafe-bootstrap { };
-          });
-
-      devShells = forAllSystems
-        (system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ self.overlays.default ];
-            };
-          in
-          {
-            default = pkgs.mkShell
-              {
-                inputsFrom = with pkgs; [ ];
-                buildInputs = with pkgs; [
-                  nixpkgs-fmt
-                ];
-              };
-          });
-
-      homeConfigurations = forAllSystems
-        (system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ self.overlays.default ];
-            };
-          in
-          {
-            samo = home-manager.lib.homeManagerConfiguration {
-              inherit pkgs;
-              modules = [
-                ./users/samo/home.nix
-              ];
-            };
-          }
-        );
+      homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./users/samo/home.nix
+        ];
+      };
 
       nixosConfigurations =
         let
           # Shared config between both the liveimage and real system
-          aarch64Base = {
+          /* aarch64Base = {
             system = "aarch64-linux";
             modules = with self.nixosModules; [
               ({ config = { nix.registry.nixpkgs.flake = nixpkgs; }; })
@@ -87,7 +41,7 @@
               traits.base
               services.openssh
             ];
-          };
+          }; */
           x86_64Base = {
             system = "x86_64-linux";
             modules = with self.nixosModules; [
@@ -104,18 +58,6 @@
             inherit (x86_64Base) system;
             modules = x86_64Base.modules ++ [
               platforms.iso
-            ];
-          };
-          aarch64IsoImage = nixpkgs.lib.nixosSystem {
-            inherit (aarch64Base) system;
-            modules = aarch64Base.modules ++ [
-              platforms.iso
-              {
-                config = {
-                  virtualisation.vmware.guest.enable = nixpkgs.lib.mkForce false;
-                  services.xe-guest-utilities.enable = nixpkgs.lib.mkForce false;
-                };
-              }
             ];
           };
           honeycombIsoImage = nixpkgs.lib.nixosSystem {
@@ -162,7 +104,16 @@
               traits.machine
               traits.workstation
               traits.gnome
-              traits.hardened
+              users.samo
+            ];
+          };
+          medion = nixpkgs.lib.nixosSystem {
+            inherit (x86_64Base) system;
+            modules = x86_64Base.modules ++ [
+              platforms.medion
+              traits.machine
+              traits.workstation
+              traits.gnome
               users.samo
             ];
           };
@@ -189,12 +140,8 @@
         traits.machine = ./traits/machine.nix;
         traits.gaming = ./traits/gaming.nix;
         traits.gnome = ./traits/gnome.nix;
-        traits.jetbrains = ./traits/jetbrains.nix;
-        traits.hardened = ./traits/hardened.nix;
         traits.sourceBuild = ./traits/source-build.nix;
         traits.honeycomb_lx2k = ./traits/honeycomb_lx2k.nix;
-        services.postgres = ./services/postgres.nix;
-        services.openssh = ./services/openssh.nix;
         # This trait is unfriendly to being bundled with platform-iso
         traits.workstation = ./traits/workstation.nix;
         users.samo = ./users/samo;
