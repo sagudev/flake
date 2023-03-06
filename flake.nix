@@ -3,27 +3,22 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-wsl.url = "github:nix-community/NixOS-WSL";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
-  outputs = { self, nixpkgs, nixos-wsl, home-manager }:
+  outputs = inputs@{ self, home-manager, nixpkgs, nixos-wsl, ... }:
     # supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
     {
 
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = [ self.overlays.default ];
-        config.allowUnfree = true;
-      };
-
       homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          overlays = [ self.overlays.default ];
+          config.allowUnfree = true;
+        };
         modules = [
           ./users/samo/home.nix
         ];
@@ -42,7 +37,7 @@
               services.openssh
             ];
           }; */
-          x86_64Base = {
+          Base_x64 = {
             system = "x86_64-linux";
             modules = with self.nixosModules; [
               ({ config = { nix.registry.nixpkgs.flake = nixpkgs; }; })
@@ -54,14 +49,14 @@
         in
         with self.nixosModules; {
           IsoImage = nixpkgs.lib.nixosSystem {
-            inherit (x86_64Base) system;
-            modules = x86_64Base.modules ++ [
+            inherit (Base_x64) system;
+            modules = Base_x64.modules ++ [
               platforms.iso
             ];
           };
           medion = nixpkgs.lib.nixosSystem {
-            inherit (x86_64Base) system;
-            modules = x86_64Base.modules ++ [
+            inherit (Base_x64) system;
+            modules = Base_x64.modules ++ [
               platforms.medion
               traits.machine
               traits.workstation
@@ -70,8 +65,8 @@
             ];
           };
           wsl = nixpkgs.lib.nixosSystem {
-            inherit (x86_64Base) system;
-            modules = x86_64Base.modules ++ [
+            inherit (Base_x64) system;
+            modules = Base_x64.modules ++ [
               nixos-wsl.nixosModules.wsl
               platforms.wsl
               users.samo
