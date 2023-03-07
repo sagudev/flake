@@ -1,10 +1,8 @@
 # flake
 
-my nix config
+This repository contains the Nix / NixOS configuration for all of my systems. 
 
 based of <https://github.com/Hoverbear-Consulting/flake/tree/b10e74f35300be96a44fd30b4ec40e1e32a32112> and <https://github.com/srid/nixos-config/blob/master/flake.nix>
-
-This repository contains the Nix / NixOS configuration for all of my systems. 
 
 ## Setup
 
@@ -22,29 +20,16 @@ To use this repository as base configuration for your new machine running:
 - Edit `users/config.nix` to contain your users
 - Run `nix develop -c , activate`. That's it. Re-open your terminal.
 
-### macOS
-
-- [Install Nix](https://nixos.org/download.html#nix-install-macos) (must be multi-user)
-- Install [nix-darwin](https://github.com/LnL7/nix-darwin) 
-    - This will create a `~/.nixpkgs/darwin-configuration.nix`, but we do not need that. 
-- Clone this repo anywhere
-- Edit `users/config.nix` to contain your users
-- Run `nix develop -c , activate`.[^cleanup] That's it. Re-open your terminal.
-
-[^cleanup]: You might have to `rm -rf /etc/nix/nix.conf`, so our flake.nix can do its thing.
-
 ## Architecture
 
 Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-parts`](https://flake.parts/) is used as the module system. 
 
 ### Directory layout 
 
-- `home`: home-manager config (shared between Linux and macOS)
-- `nixos`: nixos modules for Linux
-- `nix-darwin`: nix-darwin modules for macOS
+- `home`: home-manager config
+- `modules`: nix modules for X (aka. traits)
 - `users`: user information
-- `secrets`: agenix secrets (encrypted using ssh keys)
-- `systems`: top-level configuration.nix('ish) for various systems
+- `systems`: top-level configuration.nix for various systems
 
 ## Tips
 
