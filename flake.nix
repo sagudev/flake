@@ -1,5 +1,5 @@
 {
-  description = "Nix Flake";
+  description = "Nix's Flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -12,12 +12,16 @@
 
     # Devshell inputs
     mission-control.url = "github:Platonic-Systems/mission-control";
-    mission-control.inputs.nixpkgs.follows = "nixpkgs";
+    #mission-control.inputs.nixpkgs.follows = "nixpkgs";
     flake-root.url = "github:srid/flake-root";
+
+    #TODO: agenix
+    #TODO: cache
   };
 
   outputs = inputs@{ self, home-manager, nixpkgs, nixos-wsl, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
+      # systems for which you want to build the `perSystem` attributes
       systems = [ "x86_64-linux" ];
       imports = [
         inputs.flake-root.flakeModule
@@ -25,7 +29,7 @@
         ./lib.nix
         ./users
         ./home
-        ./nixos
+        #./modules
       ];
 
       flake = {
@@ -37,23 +41,6 @@
               ./systems/hetzner/ax101.nix
               ./nixos/server/harden.nix
               ./nixos/docker.nix
-              # ./nixos/hercules.nix
-              # I host a Nix cache
-              # (import ./nixos/cache-server.nix {
-              #   keyName = "cache-priv-key";
-              #   domain = "cache.srid.ca";
-              # })
-            ];
-          };
-        };
-
-        # Configurations for my (only) macOS machine (using nix-darwin)
-        darwinConfigurations = {
-          default = self.lib.mkMacosSystem {
-            imports = [
-              self.darwinModules.default # Defined in nix-darwin/default.nix
-              ./nixos/hercules.nix
-              ./systems/darwin.nix
             ];
           };
         };
@@ -63,7 +50,7 @@
         devShells.default = config.mission-control.installToDevShell (pkgs.mkShell {
           buildInputs = [
             pkgs.nixpkgs-fmt
-            inputs'.agenix.packages.agenix
+            #inputs'.agenix.packages.agenix
           ];
         });
         formatter = pkgs.nixpkgs-fmt;

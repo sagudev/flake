@@ -47,3 +47,5 @@ Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-p
     sudo nixos-rebuild boot
     ```
 - To autoformat the project tree using nixpkgs-fmt, run `nix fmt`.
+
+intereting webgpu test: https://iohk.io
