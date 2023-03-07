@@ -6,6 +6,7 @@ interesting:
 - <https://nixos.wiki/wiki/Flakes#Using_nix_flakes_with_NixOS>
 - <https://github.com/Hoverbear-Consulting/flake>
 - <https://github.com/srid/nixos-config>
+- <https://github.com/Misterio77/nix-starter-configs>
 
 ## Setup
 
