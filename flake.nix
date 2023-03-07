@@ -7,56 +7,33 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
 
-    # Devshell inputs
-    mission-control.url = "github:Platonic-Systems/mission-control";
-    #mission-control.inputs.nixpkgs.follows = "nixpkgs";
-    flake-root.url = "github:srid/flake-root";
-
-    #TODO: agenix
+    #TODO: agenix for secrets
     #TODO: cache
   };
 
-  outputs = inputs@{ self, home-manager, nixpkgs, nixos-wsl, flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      # systems for which you want to build the `perSystem` attributes
-      systems = [ "x86_64-linux" ];
-      imports = [
-        inputs.flake-root.flakeModule
-        inputs.mission-control.flakeModule
-        ./lib.nix
-        ./users
-        ./home
-        #./modules
+  outputs = { self, home-manager, nixpkgs, nixos-wsl, ... }@attrs: {
+    # medion laptop
+    nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = attrs;
+      modules = [
+        ./host/medion.nix
       ];
+    };
+    # wsl
+    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = attrs;
+      modules = [
+        ./host/wsl.nix
+      ];
+    };
 
-      flake = {
-        # Configurations for Linux (NixOS) systems
-        nixosConfigurations = {
-          pce = self.lib.mkLinuxSystem {
-            imports = [
-              self.nixosModules.default # Defined in nixos/default.nix
-              ./systems/hetzner/ax101.nix
-              ./nixos/server/harden.nix
-              ./nixos/docker.nix
-            ];
-          };
-        };
-      };
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
 
-      perSystem = { pkgs, config, inputs', ... }: {
-        devShells.default = config.mission-control.installToDevShell (pkgs.mkShell {
-          buildInputs = [
-            pkgs.nixpkgs-fmt
-            #inputs'.agenix.packages.agenix
-          ];
-        });
-        formatter = pkgs.nixpkgs-fmt;
-      };
-
-      /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
+    /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           system = "x86_64-linux";
           overlays = [ self.overlays.default ];
@@ -134,5 +111,5 @@
           '';
       };*/
 
-    };
+  };
 }
