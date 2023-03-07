@@ -7,13 +7,69 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
+
+    # Devshell inputs
+    mission-control.url = "github:Platonic-Systems/mission-control";
+    mission-control.inputs.nixpkgs.follows = "nixpkgs";
+    flake-root.url = "github:srid/flake-root";
   };
 
-  outputs = inputs@{ self, home-manager, nixpkgs, nixos-wsl, ... }:
-    # supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
-    {
+  outputs = inputs@{ self, home-manager, nixpkgs, nixos-wsl, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      imports = [
+        inputs.flake-root.flakeModule
+        inputs.mission-control.flakeModule
+        ./lib.nix
+        ./users
+        ./home
+        ./nixos
+      ];
 
-      homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
+      flake = {
+        # Configurations for Linux (NixOS) systems
+        nixosConfigurations = {
+          pce = self.lib.mkLinuxSystem {
+            imports = [
+              self.nixosModules.default # Defined in nixos/default.nix
+              ./systems/hetzner/ax101.nix
+              ./nixos/server/harden.nix
+              ./nixos/docker.nix
+              # ./nixos/hercules.nix
+              # I host a Nix cache
+              # (import ./nixos/cache-server.nix {
+              #   keyName = "cache-priv-key";
+              #   domain = "cache.srid.ca";
+              # })
+            ];
+          };
+        };
+
+        # Configurations for my (only) macOS machine (using nix-darwin)
+        darwinConfigurations = {
+          default = self.lib.mkMacosSystem {
+            imports = [
+              self.darwinModules.default # Defined in nix-darwin/default.nix
+              ./nixos/hercules.nix
+              ./systems/darwin.nix
+            ];
+          };
+        };
+      };
+
+      perSystem = { pkgs, config, inputs', ... }: {
+        devShells.default = config.mission-control.installToDevShell (pkgs.mkShell {
+          buildInputs = [
+            pkgs.nixpkgs-fmt
+            inputs'.agenix.packages.agenix
+          ];
+        });
+        formatter = pkgs.nixpkgs-fmt;
+      };
+
+      /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           system = "x86_64-linux";
           overlays = [ self.overlays.default ];
@@ -27,16 +83,6 @@
       nixosConfigurations =
         let
           # Shared config between both the liveimage and real system
-          /* aarch64Base = {
-            system = "aarch64-linux";
-            modules = with self.nixosModules; [
-              ({ config = { nix.registry.nixpkgs.flake = nixpkgs; }; })
-              home-manager.nixosModules.home-manager
-              traits.overlay
-              traits.base
-              services.openssh
-            ];
-          }; */
           Base_x64 = {
             system = "x86_64-linux";
             modules = with self.nixosModules; [
@@ -99,7 +145,7 @@
           ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt --check ${./.}
           touch $out # it worked!
           '';
-      };
+      };*/
 
     };
 }

@@ -62,7 +62,7 @@
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-    
+
     services.tailscale.enable = true;
 
     security.rtkit.enable = true;

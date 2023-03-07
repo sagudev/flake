@@ -6,7 +6,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
@@ -76,7 +77,7 @@
     description = "samo";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-    #  firefox
+      #  firefox
       thunderbird
     ];
   };
@@ -96,8 +97,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     latest.firefox-beta-bin
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -126,18 +127,19 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.11"; # Did you read the comment?
-  
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];  
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   system.autoUpgrade.enable = true;
 
   nixpkgs.overlays =
-  let
-    # Change this to a rev sha to pin
-    moz-rev = "master";
-    moz-url = builtins.fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz";};
-    nightlyOverlay = (import "${moz-url}/firefox-overlay.nix");
-  in [
-    nightlyOverlay
-  ];
+    let
+      # Change this to a rev sha to pin
+      moz-rev = "master";
+      moz-url = builtins.fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz"; };
+      nightlyOverlay = (import "${moz-url}/firefox-overlay.nix");
+    in
+    [
+      nightlyOverlay
+    ];
 }
