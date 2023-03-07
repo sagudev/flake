@@ -18,17 +18,34 @@
     nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = attrs;
-      modules = [
-        ./host/medion.nix
+      modules = with self.nixosModules; [
+        host.medion
       ];
     };
     # wsl
     nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = attrs;
-      modules = [
-        ./host/wsl.nix
+      modules = with self.nixosModules; [
+        nixos-wsl.nixosModules.wsl
+        host.wsl
+        users.samo
       ];
+    };
+
+    nixosModules = {
+      host.container = ./host/container.nix;
+      host.wsl = ./host/wsl.nix;
+      host.medion = ./host/medion.nix;
+      traits.overlay = { nixpkgs.overlays = [ self.overlays.default ]; };
+      traits.base = ./traits/base.nix;
+      traits.machine = ./traits/machine.nix;
+      traits.wine = ./traits/wine.nix;
+      traits.gnome = ./traits/gnome.nix;
+      traits.sourceBuild = ./traits/source-build.nix;
+      # This trait is unfriendly to being bundled with platform-iso
+      traits.workstation = ./traits/workstation.nix;
+      users.samo = ./users/samo;
     };
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
