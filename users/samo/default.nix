@@ -7,8 +7,13 @@
       isNormalUser = true;
       home = "/home/samo";
       createHome = true;
-      passwordFile = "/persist/encrypted-passwords/samo";
-      extraGroups = [ "wheel" "disk" "networkmanager" "libvirtd" "qemu-libvirtd" "kvm" "i2c" "plugdev" ];
+      description = "samo";
+      extraGroups = [ "networkmanager" "wheel" "docker" ];
+      # user packages
+      packages = with pkgs; [
+        thunderbird
+      ];
+      #extraGroups = [ "wheel" "disk" "networkmanager" "libvirtd" "qemu-libvirtd" "kvm" "i2c" "plugdev" ];
     };
   };
 }

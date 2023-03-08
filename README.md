@@ -30,10 +30,13 @@ Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-p
 
 ### Directory layout 
 
-- `home`: home-manager config
+- `hosts`: top-level configuration.nix for various systems/hosts
 - `modules`: nix modules for X (aka. traits)
-- `users`: user information
-- `systems`: top-level configuration.nix for various systems
+  - `overlays` Your custom packages and modifications, exported as overlays 
+  - `nixos` Reusable nixos modules you might want to export
+  - `home-manager` Reusable home-manager modules you might want to export
+  - `home`: home-manager config
+- `users`: user-specific settings
 
 ## Tips
 

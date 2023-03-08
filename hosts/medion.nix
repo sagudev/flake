@@ -71,17 +71,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.samo = {
-    isNormalUser = true;
-    description = "samo";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      #  firefox
-      thunderbird
-    ];
-  };
-
   # Enable automatic login for the user.
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "samo";
@@ -127,10 +116,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.11"; # Did you read the comment?
-
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  system.autoUpgrade.enable = true;
 
   nixpkgs.overlays =
     let

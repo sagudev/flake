@@ -13,17 +13,81 @@
     #TODO: cache
   };
 
-  outputs = { self, home-manager, nixpkgs, nixos-wsl, ... }@attrs: {
-    # medion laptop
-    nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
+  outputs = { self, home-manager, nixpkgs, nixos-wsl, ... }@inputs:
+    let
+      inherit (self) outputs;
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "aarch64-linux"
+        "i686-linux"
+        "x86_64-linux"
+      ];
+    in
+    rec {
+      # Your custom packages
+      # Acessible through 'nix build', 'nix shell', etc
+      packages = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./pkgs { inherit pkgs; }
+      );
+      # Devshell for bootstrapping
+      # Acessible through 'nix develop' or 'nix-shell' (legacy)
+      devShells = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./shell.nix { inherit pkgs; }
+      );
+
+      # Your custom packages and modifications, exported as overlays
+      overlays = import ./overlays { inherit inputs; };
+      # Reusable nixos modules you might want to export
+      # These are usually stuff you would upstream into nixpkgs
+      nixosModules = import ./modules/nixos;
+      # Reusable home-manager modules you might want to export
+      # These are usually stuff you would upstream into home-manager
+      homeManagerModules = import ./modules/home-manager;
+
+      # NixOS configuration entrypoint
+      # Available through 'nixos-rebuild --flake .#your-hostname'
+      nixosConfigurations = {
+        MEDION = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+
+            ./host/medion.nix
+          ];
+        };
+        wsl = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+
+            ./host/wsl.nix
+          ];
+        };
+      };
+
+      # Standalone home-manager configuration entrypoint
+      # Available through 'home-manager --flake .#your-username@your-hostname'
+      homeConfigurations = {
+        # FIXME replace with your username@hostname
+        "samo@MEDION" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
+          extraSpecialArgs = { inherit inputs outputs; };
+          modules = [
+            # > Our main home-manager configuration file <
+            ./home-manager/home.nix
+          ];
+        };
+      };
+      /*{
+        # medion laptop
+        nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = attrs;
       modules = with self.nixosModules; [
         host.medion
       ];
-    };
-    # wsl
-    nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
+        };
+        # wsl
+        nixosConfigurations.wsl = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = attrs;
       modules = with self.nixosModules; [
@@ -31,9 +95,9 @@
         host.wsl
         users.samo
       ];
-    };
+        };
 
-    nixosModules = {
+        nixosModules = {
       host.container = ./host/container.nix;
       host.wsl = ./host/wsl.nix;
       host.medion = ./host/medion.nix;
@@ -46,11 +110,11 @@
       # This trait is unfriendly to being bundled with platform-iso
       traits.workstation = ./traits/workstation.nix;
       users.samo = ./users/samo;
-    };
+      };*/
 
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
 
-    /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
+      /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           system = "x86_64-linux";
           overlays = [ self.overlays.default ];
@@ -128,5 +192,5 @@
           '';
       };*/
 
-  };
+    };
 }

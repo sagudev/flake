@@ -32,14 +32,10 @@
       wget
       curl
       nano
-      ripgrep
-      lsof
       htop
       fd
       sd
       fio
-      hyperfine
-      tokei
       ntfs3g
       killall
       gptfdisk
@@ -68,16 +64,12 @@
       source "${pkgs.fzf}/share/fzf/completion.bash"
     '';
 
-    # Use edge NixOS.
-    nix.extraOptions = ''
-      experimental-features = nix-command flakes repl-flake
-    '';
-    # nix.package = pkgs.nixUnstable;
-
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
 
-    nixpkgs.config.allowUnfree = true;
+    # Use edge NixOS.
+    nix.settings.experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+    system.autoUpgrade.enable = true;
 
     # Hack: https://github.com/NixOS/nixpkgs/issues/180175
     systemd.services.systemd-udevd.restartIfChanged = false;
