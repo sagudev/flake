@@ -7,6 +7,9 @@ interesting:
 - <https://github.com/Hoverbear-Consulting/flake>
 - <https://github.com/srid/nixos-config>
 - <https://github.com/Misterio77/nix-starter-configs>
+- <https://github.com/gvolpe/nix-config/blob/master/README.md>
+- main idea has very similar concept to <https://github.com/malloc47/config>
+- <https://codeberg.org/imMaturana/dotfiles/src/branch/main>
 
 ## Setup
 
@@ -55,4 +58,15 @@ Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-p
     ```
 - To autoformat the project tree using nixpkgs-fmt, run `nix fmt`.
 
-intereting webgpu test: https://iohk.io
+## Ideal
+
+I woud have nix system that can be deployed to WSL, containers and machines (armv7, x86, x86_64) with ability to run multipass/lxd for easy ubuntu like experience, but having it packed in full modular nix.
+
+The only real contender to this would be popos cosmic written in rust.
+
+or maybe not if I can get it working in nix: https://github.com/NixOS/nixpkgs/issues/199563
+
+Well https://guix.gnu.org/ is direct contender to nix but it is currently ...
+
+
+Off-topic: intereting webgpu test: https://iohk.io
