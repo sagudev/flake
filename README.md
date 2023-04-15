@@ -3,6 +3,7 @@
 This repository contains the Nix / NixOS configuration for all of my systems. 
 
 interesting:
+- <https://github.com/jammus/dotfiles>
 - <https://nixos.wiki/wiki/Flakes#Using_nix_flakes_with_NixOS>
 - <https://github.com/Hoverbear-Consulting/flake>
 - <https://github.com/srid/nixos-config>
@@ -60,11 +61,13 @@ Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-p
 
 ## Ideal
 
-I woud have nix system that can be deployed to WSL, containers and machines (armv7, x86, x86_64) with ability to run multipass/lxd for easy ubuntu like experience, but having it packed in full modular nix.
+I would have nix system that can be deployed to WSL, containers and machines (armv7, x86, x86_64) with ability to run multipass/lxd for easy ubuntu like experience, but having it packed in full modular nix.
 
 The only real contender to this would be popos cosmic written in rust.
 
 or maybe not if I can get it working in nix: https://github.com/NixOS/nixpkgs/issues/199563
+
+or https://github.com/numtide/system-manager on pop os
 
 Well https://guix.gnu.org/ is direct contender to nix but it is currently ...
 

@@ -11,7 +11,6 @@
     # Select internationalisation properties.
     i18n.defaultLocale = "sl_SI.UTF-8";
     i18n.supportedLocales = [ "all" ];
-
     i18n.extraLocaleSettings = {
       LC_ADDRESS = "sl_SI.UTF-8";
       LC_IDENTIFICATION = "sl_SI.UTF-8";
@@ -24,6 +23,7 @@
       LC_TIME = "sl_SI.UTF-8";
     };
 
+    # System packages
     environment.systemPackages = with pkgs; [
       # Shell utilities
       direnv
@@ -39,7 +39,6 @@
       ntfs3g
       killall
       gptfdisk
-      rnix-lsp
     ];
     environment.shellAliases = { };
     environment.pathsToLink = [

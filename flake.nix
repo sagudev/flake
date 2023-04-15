@@ -2,27 +2,108 @@
   description = "Nix's Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = github:nix-community/home-manager;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    flake-utils.url = "github:numtide/flake-utils";
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
 
     #TODO: agenix for secrets
     #TODO: cache
   };
 
-  outputs = { self, home-manager, nixpkgs, nixos-wsl, ... }@inputs:
-    let
+  outputs = { home-manager, nixpkgs, ... }:
+    {
+      # nixos-wsl
+      nixosConfigurations.nixos-wsl = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/nixos-wsl/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.users.samo = {
+              imports = [
+                ./home/default.nix
+              ];
+            };
+          }
+        ];
+      };
+      nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/medion/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.users.samo = {
+              imports = [
+                ./home/default.nix
+              ];
+            };
+          }
+        ];
+      };
+    };
+
+
+  /*outputs = { self, home-manager, nixpkgs, nixos-wsl, ... }@inputs:
+        let
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+      ];
+
+      legacyPackages = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          config = { allowUnfree = true; };
+          overlays = with inputs; [
+            nur.overlay
+            emacs.overlay
+          ];
+        });
+
+      mkHost = nixpkgs.lib.nixosSystem;
+      mkHome = home-manager.lib.homeManagerConfiguration;
+        in
+        {
+      homeManagerModules = import ./modules/home-manager;
+      nixosModules = import ./modules/host;
+
+      devShells = forAllSystems (system: {
+        default = import ./shell.nix { pkgs = legacyPackages.${system}; };
+      });
+
+      formatter = forAllSystems (system: legacyPackages.${system}.nixpkgs-fmt);
+
+      nixosConfigurations."beepboop" = mkHost {
+        pkgs = legacyPackages.x86_64-linux;
+        modules = [ ./hosts/beepboop.nix ];
+        specialArgs = { inherit self inputs; };
+      };
+
+      homeConfigurations."beepboop" = mkHome {
+        pkgs = self.outputs.nixosConfigurations.beepboop.pkgs;
+        modules = [ ./home/beepboop.nix ];
+        extraSpecialArgs = { inherit self inputs; };
+      };
+      };*/
+
+  /*let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
         "aarch64-linux"
         "i686-linux"
         "x86_64-linux"
       ];
-    in
-    rec {
+        in
+        rec {
       # Your custom packages
       # Acessible through 'nix build', 'nix shell', etc
       packages = forAllSystems (system:
@@ -76,8 +157,8 @@
             ./home-manager/home.nix
           ];
         };
-      };
-      /*{
+      };*/
+  /*{
         # medion laptop
         nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -112,9 +193,9 @@
       users.samo = ./users/samo;
       };*/
 
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+  #formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
 
-      /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
+  /*homeConfigurations.samo = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           system = "x86_64-linux";
           overlays = [ self.overlays.default ];
@@ -192,5 +273,5 @@
           '';
       };*/
 
-    };
+  # };
 }

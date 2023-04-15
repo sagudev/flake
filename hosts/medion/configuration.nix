@@ -11,6 +11,16 @@
       ./medion-hw.nix
     ];
 
+  # every config must have it
+  config = {
+    # Gui Libs
+    host.gui = true;
+    # Desktop Environment
+    host.de = true;
+    # is virtual?
+    host.virtual = false;
+  };
+
   # Bootloader.
   #boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
