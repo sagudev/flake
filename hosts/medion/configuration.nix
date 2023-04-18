@@ -8,7 +8,7 @@
   imports =
     [
       # Include the results of the hardware scan.
-      ./medion-hw.nix
+      ./hardware-configuration.nix
     ];
 
   # every config must have it

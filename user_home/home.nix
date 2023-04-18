@@ -1,21 +1,16 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Home Manager needs a bit of information about you and the
+  # paths it should manage.
   home.username = "samo";
   home.homeDirectory = "/home/samo";
 
-
-  programs.git = {
-    enable = true;
-    userName = "sagudev";
-    userEmail = "16504129+sagudev@users.noreply.github.com";
-    extraConfig = {
-      init = {
-        # "main" is only 4 chars instead of "master" (6 letters) or "trunk" (5 letters)
-        defaultBranch = "main";
-      };
-    };
-  };
+  # Packages that should be installed to the user profile.
+  home.packages = with pkgs; [
+    gnomeExtensions.dash-to-panel
+    firefox
+  ];
 
   gtk = {
     enable = true;
@@ -56,11 +51,6 @@
     };
   };
 
-  home.packages = with pkgs; [
-    gnomeExtensions.dash-to-panel
-    firefox
-  ];
-
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;
@@ -81,6 +71,16 @@
     nvram = ["/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd"]
   '';
 
-  programs.home-manager.enable = true;
+  # This value determines the Home Manager release that your
+  # configuration is compatible with. This helps avoid breakage
+  # when a new Home Manager release introduces backwards
+  # incompatible changes.
+  #
+  # You can update Home Manager without changing this value. See
+  # the Home Manager release notes for a list of state version
+  # changes in each release.
   home.stateVersion = "22.11";
+
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 }

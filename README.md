@@ -25,27 +25,20 @@ To use this repository as base configuration for your new machine running:
   - Windows (via WSL): https://github.com/nix-community/NixOS-WSL
 - Clone this repo at `/etc/nixos`
 - Edit `flake.nix` to use your system hostname in the `nixosConfigurations` set
-- Edit `users/config.nix` to contain your users
 - Run `nix develop -c , activate`. That's it. Re-open your terminal.
-
-## Architecture
-
-Start from `flake.nix` (see [Flakes](https://nixos.wiki/wiki/Flakes)). [`flake-parts`](https://flake.parts/) is used as the module system. 
 
 ### Directory layout 
 
 - `hosts`: top-level configuration.nix for various systems/hosts
 - `modules`: nix modules for X (aka. traits)
-  - `overlays` Your custom packages and modifications, exported as overlays 
-  - `nixos` Reusable nixos modules you might want to export
   - `home-manager` Reusable home-manager modules you might want to export
-  - `home`: home-manager config
-- `users`: user-specific settings
+  - `nixos` Reusable nixos modules you might want to export
+  - `overlays` Your custom packages and modifications, exported as overlays 
+  - `*.nix` Other custom traits & loaders (collections of commonwelth)
+- `user_home`: home(-manager) config (user config really)
 
 ## Tips
 
-- Run `,` in `nix develop` shell (tip: direnv is better) to see available scripts.
-  - (`,` is provided by the [mission-control](https://github.com/Platonic-Systems/mission-control) module)
 - To update NixOS (and other inputs) run `nix flake update`
   - You may also update a subset of inputs, e.g.
       ```sh
