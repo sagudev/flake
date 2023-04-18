@@ -24,15 +24,7 @@
         system = "x86_64-linux";
         modules = [
           ./hosts/nixos-wsl/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.users.samo = {
-              imports = [
-                ./home/default.nix
-              ];
-            };
-          }
+          ./home/default.nix
         ];
       };
       nixosConfigurations.medion = nixpkgs.lib.nixosSystem {
@@ -41,12 +33,9 @@
           ./hosts/medion/configuration.nix
           home-manager.nixosModules.home-manager
           {
+            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.samo = {
-              imports = [
-                ./home/default.nix
-              ];
-            };
+            home-manager.users.samo = import ./home.nix;
           }
         ];
       };

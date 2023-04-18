@@ -1,43 +1,23 @@
-{ pkgs, config, flake, ... }:
+{ pkgs, config, ... }:
 {
-  home.packages = [ pkgs.git-lfs ];
+  home.packages = [ pkgs.git ];
 
   programs.git = {
     enable = true;
     userName = "sagudev";
     userEmail = "16504129+sagudev@users.noreply.github.com";
     aliases = {
-      co = "checkout";
-      ci = "commit";
-      cia = "commit --amend";
-      s = "status";
-      st = "status";
-      b = "branch";
       # p = "pull --rebase";
-      pu = "push";
     };
     extraConfig = {
       # "main" is only 4 chars instead of "master" (6 letters) or "trunk" (5 letters)
-      defaultBranch = "main"; # https://srid.ca/unwoke
+      defaultBranch = "main";
       core.editor = "nano";
       #protocol.keybase.allow = "always";
-      credential.helper = "store --file ~/.git-credentials";
-      pull.rebase = "false";
-      # For supercede
-      core.symlinks = true;
-    };
-  };
-
-  programs.lazygit = {
-    enable = true;
-    settings = {
-      # This looks better with the kitty theme.
-      gui.theme = {
-        lightTheme = false;
-        activeBorderColor = [ "white" "bold" ];
-        inactiveBorderColor = [ "white" ];
-        selectedLineBgColor = [ "reverse" "white" ];
-      };
+      credential.helper = "${
+        pkgs.git.override { withLibsecret = true; }
+      # set passwd repo https://github.com/jordanisaacs/dotfiles/tree/master
+      }/bin/git-credential-libsecret";
     };
   };
 }

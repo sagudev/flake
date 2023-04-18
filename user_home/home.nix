@@ -12,6 +12,8 @@
     firefox
   ];
 
+  # here be programs.*
+
   gtk = {
     enable = true;
     gtk3.extraConfig = {
@@ -48,22 +50,6 @@
     "org/gnome/desktop/background" = {
       picture-uri = "file://${./nix.jpg}";
       picture-uri-dark = "file://${./nix.jpg}";
-    };
-  };
-
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode;
-    userSettings = {
-      "workbench.colorTheme" = "Palenight Operator";
-      "terminal.integrated.scrollback" = 10000;
-      "terminal.integrated.fontFamily" = "Jetbrains Mono";
-      "terminal.integrated.fontSize" = 16;
-      "editor.fontFamily" = "Jetbrains Mono";
-      "telemetry.telemetryLevel" = "off";
-      "remote.SSH.useLocalServer" = false;
-      "editor.fontSize" = 18;
-      "editor.formatOnSave" = true;
     };
   };
 
