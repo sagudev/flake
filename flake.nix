@@ -30,7 +30,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.samo = import ./noconfig/home.nix;
+              home-manager.users.samo = import ./noconfig/home/home.nix;
             }
 
           ];
