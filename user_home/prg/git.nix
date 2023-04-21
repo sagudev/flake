@@ -16,7 +16,7 @@
       #protocol.keybase.allow = "always";
       credential.helper = "${
         pkgs.git.override { withLibsecret = true; }
-      # set passwd repo https://github.com/jordanisaacs/dotfiles/tree/master
+      # TODO: set passwd repo https://github.com/jordanisaacs/dotfiles/tree/master
       }/bin/git-credential-libsecret";
     };
   };

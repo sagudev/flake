@@ -12,14 +12,14 @@
     ];
 
   # every config must have it
-  config = {
+  /*config = {
     # Gui Libs
     host.gui = true;
     # Desktop Environment
     host.de = true;
     # is virtual?
     host.virtual = false;
-  };
+  };*/
 
   # Bootloader.
   #boot.loader.systemd-boot.enable = true;
@@ -126,15 +126,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.11"; # Did you read the comment?
-
-  nixpkgs.overlays =
-    let
-      # Change this to a rev sha to pin
-      moz-rev = "master";
-      moz-url = builtins.fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz"; };
-      nightlyOverlay = (import "${moz-url}/firefox-overlay.nix");
-    in
-    [
-      nightlyOverlay
-    ];
 }

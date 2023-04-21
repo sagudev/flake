@@ -1,5 +1,17 @@
 {
-    "nixEnvSelector.nixFile": "${workspaceRoot}/shell.nix",
+    "nix.enableLanguageServer": true,
+    //"nix.serverPath": "rnix-lsp",
+    "nix.serverPath": "nil",
+    "nix.formatterPath": "nixpkgs-fmt",
+    "nix.serverSettings": {
+        // settings for 'nil' LSP
+        "nil": {
+            "formatting": {
+                "command": [
+                    "nixpkgs-fmt"
+                ]
+            }
+        }
+    },
     "editor.formatOnSave": true,
-    "editor.formatOnType": true
 }
