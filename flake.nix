@@ -25,12 +25,12 @@
           specialArgs = attrs;
           modules = [
             ./hosts/medion/configuration.nix
-            ./user_home/user.nix
+            ./noconfig/user.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.samo = import ./user_home/home.nix;
+              home-manager.users.samo = import ./noconfig/home.nix;
             }
 
           ];
