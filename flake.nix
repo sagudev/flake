@@ -2,8 +2,10 @@
   description = "Nix's Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    #nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-22.11";
+    # Who is scared?
+    # Me not.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -12,6 +14,15 @@
     #flake-utils.url = "github:numtide/flake-utils";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     nixpkgs-mozilla.url = "github:mozilla/nixpkgs-mozilla";
+
+    nur.url = "github:nix-community/NUR";
+    # My own NUR repo for bleeding-edge updates
+    #nur-ifd3f = {
+    #  url = "github:ifd3f/nur-packages";
+    #  inputs.nixpkgs.follows = "nixpkgs-unstable";
+    #};
+
+    #nixos-generators
 
     #TODO: agenix for secrets
     #TODO: cache

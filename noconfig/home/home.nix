@@ -9,7 +9,7 @@
   # Packages that should be installed to the user profile.
   home.packages = with pkgs; [
     gnomeExtensions.dash-to-panel
-    firefox
+    latest.firefox-beta-bin
   ];
 
   # here be programs.*

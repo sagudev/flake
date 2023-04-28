@@ -7,7 +7,7 @@
   config = {
     # System packages
     environment.systemPackages = with pkgs; [
-      # Stuff you allways need
+      # Stuff you always need
       direnv
       nix-direnv
       git
@@ -15,14 +15,15 @@
       curl
       nano
       htop
-      killall
-      # ntfs3g
+      ntfs3g
       # gptfdisk
     ];
 
     # home manager
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
+
+    nixpkgs.config.allowUnfree = true;
 
     # Use edge NixOS.
     nix.settings.experimental-features = [ "nix-command" "flakes" "repl-flake" ];
