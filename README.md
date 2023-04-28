@@ -32,11 +32,11 @@ To use this repository as base configuration for your new machine running:
 
 - `hosts`: top-level configuration.nix for various systems/hosts
 - `modules`: nix modules for X (aka. traits)
-  - `home-manager` Reusable home-manager modules you might want to export
+  - `home` Reusable home-manager modules you might want to export
   - `nixos` Reusable nixos modules you might want to export
   - `overlays` Your custom packages and modifications, exported as overlays 
   - `*.nix` Other custom traits & loaders (collections of commonwelth)
-- `user_home`: home(-manager) config (user config really)
+- `noconfig`: home(-manager) config (user config really)
 
 ## Tips
 
