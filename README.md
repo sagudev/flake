@@ -12,6 +12,7 @@ interesting:
 - main idea has very similar concept to <https://github.com/malloc47/config>
 - <https://codeberg.org/imMaturana/dotfiles/src/branch/main>
 - <https://github.com/ifd3f/infra/blob/main/flake.nix>
+- <https://github.com/bbigras/nix-config>
 
 ## Setup
 
